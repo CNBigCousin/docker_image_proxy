@@ -17,3 +17,4 @@ networkstatic/iperf3:latest
 ghcr.io/gchq/cyberchef:latest
 linuxserver/duplicati
 dushixiang/guacd
+cesign/kubespider
