@@ -6,8 +6,6 @@ snowdreamtech/frps:latest
 php:latest
 node:latest
 python:latest
-mariadb:latest
-mysql:latest
 haxe:latest
 xhofe/alist:latest
 6053537/portainer-ce:latest
