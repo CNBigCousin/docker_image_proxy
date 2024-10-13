@@ -17,3 +17,4 @@ linuxserver/duplicati
 dushixiang/guacd
 cesign/kubespider
 jeessy/backup-x
+bitnami/minio:2024
