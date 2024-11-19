@@ -21,3 +21,4 @@ bitnami/minio:2024
 orekiiiiiiiiiiiii/auto-lady:latest
 sickcodes/docker-osx:latest
 dockurr/macos
+dockurr/windows
