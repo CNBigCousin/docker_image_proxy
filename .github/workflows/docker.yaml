@@ -88,11 +88,11 @@ jobs:
             
             # 如果镜像存在于数组中，则添加temp_map
             if [[ -n "${temp_map[$image_name]}" ]]; then
-                 # 如果temp_map已经存在镜像名，判断是不是同一命名空间
-                 if [[ "${temp_map[$image_name]}" != $name_space  ]]; then
+                # 如果temp_map已经存在镜像名，判断是不是同一命名空间
+                if [[ "${temp_map[$image_name]}" != $name_space  ]]; then
                     echo "duplicate image name: $image_name"
                     duplicate_images[$image_name]="true"
-                 fi
+                fi
             else
                 # 存镜像的命名空间
                 temp_map[$image_name]=$name_space
@@ -108,7 +108,10 @@ jobs:
             fi
         
             echo "docker pull $line"
-            docker pull $line
+            if ! docker pull $line; then
+                echo "镜像拉取失败，跳过当前镜像"
+                continue
+            fi
             platform=$(echo "$line" | awk -F'--platform[ =]' '{if (NF>1) print $2}' | awk '{print $1}')
             echo "platform is $platform"
             # 如果存在架构信息 将架构信息拼到镜像名称前面
@@ -131,10 +134,10 @@ jobs:
             name_space_prefix=""
             # 如果镜像名重名
             if [[ -n "${duplicate_images[$image_name]}" ]]; then
-               #如果命名空间非空，将命名空间加到前缀
-               if [[ -n "${name_space}" ]]; then
+              #如果命名空间非空，将命名空间加到前缀
+              if [[ -n "${name_space}" ]]; then
                   name_space_prefix="${name_space}_"
-               fi
+              fi
             fi
             
             # 将@sha256:等字符删除
@@ -154,5 +157,5 @@ jobs:
             echo "=============================================================================="
             df -hT
             echo "=============================================================================="     
-            
+                
         done < images.txt
