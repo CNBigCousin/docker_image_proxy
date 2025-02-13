@@ -12,7 +12,6 @@ env:
   ALIYUN_NAME_SPACE: "${{ secrets.ALIYUN_NAME_SPACE }}"
   ALIYUN_REGISTRY_USER: "${{ secrets.ALIYUN_REGISTRY_USER }}"
   ALIYUN_REGISTRY_PASSWORD: "${{ secrets.ALIYUN_REGISTRY_PASSWORD }}"
-  VERSION_LIST_FILE: "version_list.txt"
 
 jobs:
 
@@ -31,6 +30,7 @@ jobs:
     - name: Maximize build space
       uses: easimon/maximize-build-space@master
       with:
+
         root-reserve-mb: 2048
         swap-size-mb: 128
         remove-dotnet: 'true'
@@ -159,65 +159,3 @@ jobs:
             echo "=============================================================================="     
                 
         done < images.txt
-
-    - name: Maintain version list
-      run: |
-        # 读取版本列表
-        while IFS= read -r line || [ -n "$line" ]; do
-            # 忽略空行与注释
-            [[ -z "$line" ]] && continue
-            if echo "$line" | grep -q '^\s*#'; then
-                continue
-            fi
-            
-            # 获取镜像的完整名称，例如kasmweb/nginx:1.25.3（命名空间/镜像名:版本号）
-            image=$(echo "$line" | awk '{print $NF}')
-            # 将@sha256:等字符删除
-            image="${image%%@*}"
-            echo "image $image"
-            # 获取镜像名:版本号  例如nginx:1.25.3
-            image_name_tag=$(echo "$image" | awk -F'/' '{print $NF}')
-            echo "image_name_tag $image_name_tag"
-            # 获取命名空间 例如kasmweb,  这里有种特殊情况 docker.io/nginx，把docker.io当成命名空间，也OK
-            name_space=$(echo "$image" | awk -F'/' '{if (NF==3) print $2; else if (NF==2) print $1; else print ""}')
-            echo "name_space: $name_space"
-            # 这里不要是空值影响判断
-            name_space="${name_space}_"
-            # 获取镜像名例如nginx
-            image_name=$(echo "$image_name_tag" | awk -F':' '{print $1}')
-            echo "image_name: $image_name"
-            
-            # 将镜像版本信息添加到版本列表
-            echo "$image_name:$image_name_tag" >> $VERSION_LIST_FILE
-        done < images.txt
-
-    - name: Clean up old versions
-      run: |
-        # 读取版本列表
-        while IFS= read -r line || [ -n "$line" ]; do
-            # 忽略空行与注释
-            [[ -z "$line" ]] && continue
-            if echo "$line" | grep -q '^\s*#'; then
-                continue
-            fi
-            
-            # 获取镜像名和版本号
-            image_name=$(echo "$line" | awk -F':' '{print $1}')
-            image_tag=$(echo "$line" | awk -F':' '{print $2}')
-            echo "image_name: $image_name, image_tag: $image_tag"
-            
-            # 获取镜像的完整名称，例如kasmweb/nginx:1.25.3（命名空间/镜像名:版本号）
-            image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$image_name:$image_tag"
-            echo "image $image"
-            
-            # 检查版本数量
-            versions=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$image_name" | wc -l)
-            echo "versions: $versions"
-            
-            # 如果版本数量超过3个，删除最旧的版本
-            if [ "$versions" -gt 3 ]; then
-                old_image=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$image_name" | head -n 1)
-                echo "old_image: $old_image"
-                docker rmi $old_image
-            fi
-        done < $VERSION_LIST_FILE
