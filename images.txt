@@ -18,7 +18,6 @@ dushixiang/guacd
 cesign/kubespider
 jeessy/backup-x
 bitnami/minio:2024
-orekiiiiiiiiiiiii/auto-lady
 sickcodes/docker-osx:latest
 dockurr/macos
 dockurr/windows
