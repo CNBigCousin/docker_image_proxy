@@ -25,4 +25,4 @@ dockurr/windows
 zzzshanghai/doube-itv
 xxxsen/yamdc
 ghcr.io/open-webui/open-webui:main
-calciumion/new-api:latest
+calciumion/new-api
