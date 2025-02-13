@@ -15,6 +15,7 @@ networkstatic/iperf3:latest
 ghcr.io/gchq/cyberchef:latest
 linuxserver/duplicati
 dushixiang/guacd
+orekiiiiiiiiiiiii/auto-lady
 cesign/kubespider
 jeessy/backup-x
 bitnami/minio:2024
