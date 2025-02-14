@@ -27,3 +27,4 @@ xxxsen/yamdc
 ghcr.io/open-webui/open-webui:main
 calciumion/new-api
 pengzhile/new-api
+voapi/voapi
