@@ -29,3 +29,4 @@ calciumion/new-api
 pengzhile/new-api
 calciumion/new-api-horizon
 voapi/voapi
+justsong/wechat-server
